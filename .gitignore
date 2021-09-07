@@ -1,0 +1,8 @@
+*.jar
+./*/build
+*.dll
+*.j3o
+*.j3odata
+*.fbx
+*.jpg
+*.png
