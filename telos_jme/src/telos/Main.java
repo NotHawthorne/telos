@@ -2,6 +2,7 @@ package telos;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.bullet.PhysicsSpace;
 import static com.jme3.bullet.PhysicsSpace.getPhysicsSpace;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -36,12 +37,14 @@ public class Main extends SimpleApplication {
         inputManager.removeListener(flyCam);
         GameCam gc = new GameCam(GameCam.UpVector.Y_UP);
         WorldManager.state = gc;
+        WorldManager.state.setDebugEnabled(true);
         gc.registerWithInput(inputManager);
-        gc.setCenter(new Vector3f(20,0.5f,20));
+        gc.setCenter(new Vector3f(1,1,1));
         gc.setEnabled(true);
         stateManager.attach(gc);
         WorldManager.setCamera(getCamera());
-        HelloTerrain t = new HelloTerrain();
+        WorldManager.main = this;
+        HelloTerrain t = WorldManager.getChunk(0, 0);
         try {
             c = new ClientConnector();
             c.Connect();

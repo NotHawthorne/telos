@@ -81,8 +81,8 @@ public class HelloTerrain {
 
     /** 4. We give the terrain its material, position & scale it, and attach it. */
     terrain.setMaterial(mat_terrain);
-    terrain.setLocalTranslation(0, -100, 0);
-    terrain.setLocalScale(2f, 1f, 2f);
+    terrain.setLocalTranslation(0, 0, 0);
+    terrain.setLocalScale(1f, 1f, 1f);
 
     /** 5. The LOD (level of detail) depends on were the camera is: */
     TerrainLodControl control = new TerrainLodControl(terrain, WorldManager.cam);

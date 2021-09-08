@@ -18,7 +18,9 @@ import telos.WorldManager;
 import telos.lib.core.Unit;
 import telos.lib.network.messages.unit.CreateUnitMessage;
 import com.jme3.bullet.control.BetterCharacterControl;
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import telos.GameCam;
 
 /**
  *
@@ -36,9 +38,20 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
             u.setLoc(m.getLoc());
             u.setModel(WorldManager.assetManager.loadModel("/Models/paladin_prop_j_nordstrom/paladin_prop_j_nordstrom.j3o"));
             u.setLocalTranslation(u.getLoc());
+            u.getController().setPhysicsLocation(m.getLoc());
             u.getController().setSpatial(u.getModel());
-            WorldManager.root.attachChild(u);
-            WorldManager.state.getPhysicsSpace().add(u);
+            WorldManager.main.enqueue(() -> {
+                WorldManager.root.attachChild(u);
+                WorldManager.state.getPhysicsSpace().add(u);
+                
+                //snap to ground logic
+                System.out.println("Init: " + u.getLocalTranslation().toString());
+                Vector3f snapToGroundVec = new Vector3f(u.getLoc().x, WorldManager.getChunk(0,0).getTerrain().getHeight(new Vector2f(u.getLoc().x, u.getLoc().z)), u.getLoc().z);
+                u.setLoc(snapToGroundVec);
+                u.setLocalTranslation(snapToGroundVec);
+                System.out.println("after: " + snapToGroundVec.toString());
+                ((GameCam)WorldManager.state).setCenter(snapToGroundVec);
+            });
             /*
             Box b = new Box(1, 1, 1);
             Geometry geom = new Geometry("Box", b);
