@@ -12,6 +12,7 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Node;
 import java.util.HashMap;
 import java.util.Map;
+import telos.lib.core.Unit;
 import world.HelloTerrain;
 
 /**
@@ -25,6 +26,7 @@ public class WorldManager {
     public static BulletAppState state;
     public static Main main;
     public static Map<Integer, Map<Integer, HelloTerrain>> chunks = new HashMap<Integer, Map<Integer, HelloTerrain>>();
+    public static Map<String, Unit> units =  new HashMap<String, Unit>();
     
     public static void setRoot(Node newRoot) {
         root = newRoot; 

@@ -52,6 +52,7 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
                 System.out.println("after: " + snapToGroundVec.toString());
                 ((GameCam)WorldManager.state).setCenter(snapToGroundVec);
             });
+            WorldManager.units.put(m.getUUID(), u);
             /*
             Box b = new Box(1, 1, 1);
             Geometry geom = new Geometry("Box", b);

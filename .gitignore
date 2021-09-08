@@ -6,3 +6,9 @@
 *.fbx
 *.jpg
 *.png
+telos_jme/build
+telos_lib/build
+telos_server/build
+.*
+gradle
+gradlew
