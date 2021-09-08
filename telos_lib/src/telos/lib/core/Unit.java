@@ -33,9 +33,10 @@ public class Unit extends WorldEntity {
         _controller = new CharacterControl(_shape, 1f);
         _controller.setEnabled(true);
         _controller.setUp(new Vector3f(0, 1f, 0));
-        _controller.setPhysicsLocation(new Vector3f(1, 1, 1));
         _controller.setGravity(new Vector3f(0.0f, -9.8f, 0.0f));
-        _controller.warp(new Vector3f(0, 10, 0));
+        _controller.setApplyPhysicsLocal(true);
+        _controller.setFallSpeed(15f);
+        _controller.setLinearVelocity(new Vector3f(0, 1, 0));
     }
 
     public Vector3f getTravelDestination() {
