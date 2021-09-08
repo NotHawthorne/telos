@@ -28,7 +28,7 @@ public class Unit extends WorldEntity {
     public Unit() { super(); }
     public Unit(String name, int hp) {
         _shape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        _name = name;
+        this.setName(name);
         _hp = hp;
         _controller = new CharacterControl(_shape, 1f);
         _controller.setEnabled(true);
@@ -45,6 +45,8 @@ public class Unit extends WorldEntity {
 
     public void setTravelDestination(Vector3f _travelDestination) {
         this._travelDestination = _travelDestination;
+        this.setLocalTranslation(_travelDestination); // TODO: walk there instead of teleporting
+        this.setLoc(_travelDestination);
     }
 
     public Spatial getModel() {
@@ -61,10 +63,17 @@ public class Unit extends WorldEntity {
         return _controller;
     }
     
-    public void setName(String name) { _name = name; }
+    @Override
+    public void setName(String name) { 
+        super.setName(name);
+        _name = name; 
+    }
     public void setHp(int hp) { _hp = hp; }
     public void setOwner(String owner) { _owner = owner; }
     public String getOwner() { return _owner; }
-    public String getName() { return _name; }
+    @Override
+    public String getName() {
+        return _name.equals(super.getName()) ? _name : super.getName();
+    }
     public int getHp() { return _hp; }
 }

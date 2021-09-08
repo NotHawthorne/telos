@@ -33,6 +33,7 @@ public class LoginMessageListener implements MessageListener<HostedConnection> {
           Unit u = new Unit("Worker", 50);
           u.setUUID(UUID.randomUUID().toString());
           u.setLoc(new Vector3f(1.0f, 1.0f, 1.0f));
+          u.setOwner(loginMessage.getUsername());
           UnitLedger.addUnit(u.getUUID(), u);
           source.send(new CreateUnitMessage(u.getUUID(), u.getLoc(), u.getName(), u.getHp()));
           
@@ -40,6 +41,7 @@ public class LoginMessageListener implements MessageListener<HostedConnection> {
           Unit u2 = new Unit("Worker", 50);
           u2.setUUID(UUID.randomUUID().toString());
           u2.setLoc(new Vector3f(2.0f, 2.0f, 2.0f));
+          u2.setOwner(loginMessage.getUsername());
           UnitLedger.addUnit(u2.getUUID(), u2);
           source.send(new CreateUnitMessage(u2.getUUID(), u2.getLoc(), u2.getName(), u2.getHp()));
         }

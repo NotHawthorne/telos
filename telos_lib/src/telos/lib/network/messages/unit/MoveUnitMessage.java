@@ -27,4 +27,5 @@ public class MoveUnitMessage extends AbstractMessage {
     public void setTargetLoc(Vector3f loc) { _targetLoc = loc; }
     public String getUUID() { return _id; }
     public Vector3f getTargetLoc() { return _targetLoc; }
+    public String toString() { return "Move Unit: " + _id + " to " + _targetLoc.toString(); }
 }

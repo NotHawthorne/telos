@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import telos.lib.network.messages.unit.CreateUnitMessage;
 import telos.lib.network.messages.unit.MoveUnitMessage;
 import telos.net.listeners.CreateUnitMessageListener;
+import telos.net.listeners.MoveUnitMessageListener;
 
 /**
  *
@@ -30,20 +31,16 @@ public class ClientConnector {
     private String _host = "localhost";
     private int _port = 4242;
     private Map<Class<? extends AbstractMessage>, MessageListener> _listeners = new HashMap<>();
-    private LoginMessageListener _listener;
     
     public void registerListeners() {
         _listeners.put(LoginMessage.class, new LoginMessageListener());
         _listeners.put(CreateUnitMessage.class, new CreateUnitMessageListener());
-        _listeners.put(MoveUnitMessage.class, null);
+        _listeners.put(MoveUnitMessage.class, new MoveUnitMessageListener());
     }
     
-    public ClientConnector() {
-        _listener = new LoginMessageListener();
-    }
+    public ClientConnector() { }
     
     public ClientConnector(String host, int port) {
-        _listener = new LoginMessageListener();
         _host = host;
         _port = port;
     }
@@ -70,6 +67,10 @@ public class ClientConnector {
     // should maybe return response
     public void Login(String username, String password) {
         _client.send(new LoginMessage(username, password));
+    }
+
+    public Client getClient() {
+        return _client;
     }
     
     /**

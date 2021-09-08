@@ -23,9 +23,11 @@ public class MoveUnitMessageListener implements MessageListener<HostedConnection
         if (message instanceof MoveUnitMessage) {
           // do something with the message
           MoveUnitMessage m = (MoveUnitMessage) message;
+          System.out.println(m.toString());
           if (UserLedger.findUser(source).equals(UnitLedger.getUnit(m.getUUID()).getOwner())) {
               UnitLedger.getUnit(m.getUUID()).setLoc(m.getTargetLoc());
               System.out.println("Moved " + m.getUUID() + " to " + m.getTargetLoc().toString());
+              source.send(message);
           }
           else {
               System.out.println("Someone tried to send a malicious packet to move someone elses unit!");

@@ -8,8 +8,17 @@ package telos;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.collision.CollisionResults;
+import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector2f;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.shape.Torus;
 import java.util.HashMap;
 import java.util.Map;
 import telos.lib.core.Unit;
@@ -27,6 +36,48 @@ public class WorldManager {
     public static Main main;
     public static Map<Integer, Map<Integer, HelloTerrain>> chunks = new HashMap<Integer, Map<Integer, HelloTerrain>>();
     public static Map<String, Unit> units =  new HashMap<String, Unit>();
+    public static Unit selectedUnit;
+    public static Geometry mark;
+    
+    
+    protected static void initMark() {
+      Torus ring = new Torus(30, 30, 0.05f, 0.3f);
+      mark = new Geometry("BOOM!", ring);
+      Material mark_mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+      mark_mat.setColor("Color", ColorRGBA.Red);
+      mark.setMaterial(mark_mat);
+      mark.setLocalRotation(new Quaternion().fromAngleAxis(FastMath.PI/2, new Vector3f(1, 0, 0)));
+    }
+    
+    public static void snapMarker(Unit target) {
+        if (target != null) {
+            System.out.println("BEFORE " + mark.getLocalTranslation().toString());
+            mark.setLocalTranslation(new Vector3f(
+                    WorldManager.selectedUnit.getLoc().x, 
+                    WorldManager.getChunk(0,0).getTerrain().getHeight(
+                            new Vector2f(
+                                    WorldManager.selectedUnit.getLoc().x, 
+                                    WorldManager.selectedUnit.getLoc().z
+                            )
+                    ),
+                    WorldManager.selectedUnit.getLoc().z)
+            );
+            root.attachChild(mark);
+            System.out.println("AFTER " + mark.getLocalTranslation().toString());
+        } else {
+            root.detachChild(mark);
+        }
+    }
+    
+    public static void select(Unit target) {
+        selectedUnit = target;
+        main.unitSelectionDisplay.setText(target == null ? "None" : target.getName());
+        snapMarker(target);
+    }
+    
+    public static void init() {
+        initMark();
+    }
     
     public static void setRoot(Node newRoot) {
         root = newRoot; 
