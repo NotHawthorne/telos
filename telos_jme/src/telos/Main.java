@@ -47,6 +47,7 @@ public class Main extends SimpleApplication {
     ClientConnector c;
     ActionListener actionListener;
     Label unitSelectionDisplay;
+    WorldManager wm;
     
     public static void main(String[] args) {
         Main app = new Main();
@@ -126,6 +127,9 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
+        System.out.println("Starting");
+        wm = new WorldManager();
+        stateManager.attach(wm);
         WorldManager.root = rootNode;
         WorldManager.assetManager = assetManager;
         WorldManager.init();
@@ -167,6 +171,7 @@ public class Main extends SimpleApplication {
         stateManager.attach(gc);
         WorldManager.setCamera(getCamera());
         WorldManager.main = this;
+        System.out.println("Here");
         HelloTerrain t = WorldManager.getChunk(0, 0);
         try {
             c = new ClientConnector();

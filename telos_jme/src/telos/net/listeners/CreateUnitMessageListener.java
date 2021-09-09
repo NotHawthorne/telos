@@ -41,6 +41,7 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
             u.getController().setPhysicsLocation(m.getLoc());
             u.getController().setSpatial(u.getModel());
             WorldManager.main.enqueue(() -> {
+                u.updateNav(WorldManager.getChunk(0,0).navMesh);
                 WorldManager.root.attachChild(u);
                 WorldManager.state.getPhysicsSpace().add(u);
                 

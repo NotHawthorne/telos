@@ -5,6 +5,7 @@
  */
 package telos;
 
+import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
@@ -28,7 +29,7 @@ import world.HelloTerrain;
  *
  * @author Beefaroni
  */
-public class WorldManager {
+public class WorldManager extends AbstractAppState {
     public static Node root;
     public static AssetManager assetManager;
     public static Camera cam;
@@ -51,7 +52,6 @@ public class WorldManager {
     
     public static void snapMarker(Unit target) {
         if (target != null) {
-            System.out.println("BEFORE " + mark.getLocalTranslation().toString());
             mark.setLocalTranslation(new Vector3f(
                     WorldManager.selectedUnit.getLoc().x, 
                     WorldManager.getChunk(0,0).getTerrain().getHeight(
@@ -63,7 +63,6 @@ public class WorldManager {
                     WorldManager.selectedUnit.getLoc().z)
             );
             root.attachChild(mark);
-            System.out.println("AFTER " + mark.getLocalTranslation().toString());
         } else {
             root.detachChild(mark);
         }
@@ -76,7 +75,9 @@ public class WorldManager {
     }
     
     public static void init() {
+        System.out.println("Init");
         initMark();
+        System.out.println("Init2");
     }
     
     public static void setRoot(Node newRoot) {
@@ -98,5 +99,13 @@ public class WorldManager {
             chunks.get(y).put(x, new HelloTerrain());
         }
         return chunks.get(y).get(x);
+    }
+    
+    @Override
+    public void update(float tpf) {
+        for (Unit u : units.values() ) {
+            u.update(tpf);
+        }
+        snapMarker(selectedUnit);
     }
 }

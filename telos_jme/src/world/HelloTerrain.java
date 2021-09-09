@@ -1,11 +1,17 @@
 package world;
 
+import com.jme3.ai.navmesh.NavMesh;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
+import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
+import com.jme3.scene.Mesh;
+import com.jme3.scene.VertexBuffer;
+import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
 import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
@@ -25,9 +31,64 @@ public class HelloTerrain {
   private TerrainQuad terrain;
   Material mat_terrain;
   private int seed = 42;
+  public NavMesh navMesh;
   
   public TerrainQuad getTerrain() { return terrain; }
-  
+      /**
+     * Takes a Terrain, which can be composed of numerous meshes, and converts
+     * them into a single mesh.
+     * 
+     * @param terr the terrain to be converted
+     * @return a single mesh consisting of all meshes of a Terrain
+     */
+    public Mesh getTerrainMesh() {
+        float[] heights = terrain.getHeightMap();
+        int length = heights.length;
+        int side = (int) FastMath.sqrt(heights.length);
+        float[] vertices = new float[length * 3];
+        int[] indices = new int[(side - 1) * (side - 1) * 6];
+
+//        Vector3f trans = ((Node) terr).getWorldTranslation().clone();
+        Vector3f trans = new Vector3f(0, 0, 0);
+        trans.x -= terrain.getTerrainSize() / 2f;
+        trans.z -= terrain.getTerrainSize() / 2f;
+        float offsetX = trans.x;
+        float offsetZ = trans.z;
+
+        // do vertices
+        int i = 0;
+        for (int z = 0; z < side; z++) {
+            for (int x = 0; x < side; x++) {
+                vertices[i++] = x + offsetX;
+                vertices[i++] = heights[z * side + x];
+                vertices[i++] = z + offsetZ;
+            }
+        }
+
+        // do indexes
+        i = 0;
+        for (int z = 0; z < side - 1; z++) {
+            for (int x = 0; x < side - 1; x++) {
+                // triangle 1
+                indices[i++] = z * side + x;
+                indices[i++] = (z + 1) * side + x;
+                indices[i++] = (z + 1) * side + x + 1;
+                // triangle 2
+                indices[i++] = z * side + x;
+                indices[i++] = (z + 1) * side + x + 1;
+                indices[i++] = z * side + x + 1;
+            }
+        }
+
+        Mesh mesh2 = new Mesh();
+        mesh2.setBuffer(VertexBuffer.Type.Position, 3, vertices);
+        mesh2.setBuffer(VertexBuffer.Type.Index, 3, indices);
+        System.out.println("Doing " + side * side + " calcs");
+        mesh2.updateBound();
+        mesh2.updateCounts();
+
+        return mesh2;
+    }
   public HelloTerrain() {
     /** 1. Create terrain material and load four textures into it. */
     mat_terrain = new Material(WorldManager.assetManager,
@@ -76,8 +137,8 @@ public class HelloTerrain {
      * 3.4) As LOD step scale we supply Vector3f(1,1,1).
      * 3.5) We supply the prepared heightmap itself.
      */
-    int patchSize = 65;
-    terrain = new TerrainQuad("my terrain", patchSize, 513, heightmap.getHeightMap());
+    int patchSize = 17;
+    terrain = new TerrainQuad("my terrain", patchSize, 129, heightmap.getHeightMap());
 
     /** 4. We give the terrain its material, position & scale it, and attach it. */
     terrain.setMaterial(mat_terrain);
@@ -92,6 +153,9 @@ public class HelloTerrain {
     CollisionShape s = CollisionShapeFactory.createMeshShape(terrain);
     RigidBodyControl c = new RigidBodyControl(s, 0);
     terrain.addControl(c);
+    System.out.println("Calcing navmesh");
+    navMesh = new NavMesh(getTerrainMesh());
+    
     WorldManager.root.attachChild(terrain);
     WorldManager.state.getPhysicsSpace().add(c);
     System.out.println("YOOOO");
