@@ -5,6 +5,8 @@
  */
 package telos.lib.core;
 
+import telos.lib.core.player.PlayerFactions;
+
 /**
  *
  * @author Alyssa Kozma
@@ -12,11 +14,29 @@ package telos.lib.core;
 
 public class Player {
     private String _username;
+    private int _password;
     private int _credits;
     private int _iron;
     private int _lumber;
     private int _oil;
     private int _crystals;
+    private PlayerFactions _faction;
+
+    public int getPassword() {
+        return _password;
+    }
+
+    public void setPassword(int _password) {
+        this._password = _password;
+    }
+
+    public PlayerFactions getFaction() {
+        return _faction;
+    }
+
+    public void setFaction(PlayerFactions _faction) {
+        this._faction = _faction;
+    }
 
     public void setUsername(String _username) {
         this._username = _username;

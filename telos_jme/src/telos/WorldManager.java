@@ -70,7 +70,7 @@ public class WorldManager extends AbstractAppState {
     
     public static void select(Unit target) {
         selectedUnit = target;
-        main.unitSelectionDisplay.setText(target == null ? "None" : target.getName());
+        GuiManager.unitSelectionDisplay.setText(target == null ? "None" : target.getName());
         snapMarker(target);
     }
     

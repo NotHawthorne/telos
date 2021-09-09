@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import server.listeners.MoveUnitMessageListener;
 import telos.lib.network.messages.LoginMessage;
+import telos.lib.network.messages.LoginResponseMessage;
 import telos.lib.network.messages.unit.CreateUnitMessage;
 import telos.lib.network.messages.unit.MoveUnitMessage;
 
@@ -38,6 +39,7 @@ public class GameServer {
         _listeners.put(LoginMessage.class, new LoginMessageListener());
         _listeners.put(CreateUnitMessage.class, null);
         _listeners.put(MoveUnitMessage.class, new MoveUnitMessageListener());
+        _listeners.put(LoginResponseMessage.class, null);
     }
     
     public GameServer() {
@@ -55,7 +57,7 @@ public class GameServer {
             for (Map.Entry<Class<? extends AbstractMessage>, MessageListener> entry : _listeners.entrySet()) {
                 Serializer.registerClass(entry.getKey());
             }
-            _server = Network.createServer(_port);
+            _server = Network.createServer(_port); 
             for (Map.Entry<Class<? extends AbstractMessage>, MessageListener> entry : _listeners.entrySet()) {
                 if (entry.getValue() != null) {
                     _server.addMessageListener(entry.getValue(), entry.getKey());

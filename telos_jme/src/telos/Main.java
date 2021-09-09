@@ -46,7 +46,6 @@ public class Main extends SimpleApplication {
     
     ClientConnector c;
     ActionListener actionListener;
-    Label unitSelectionDisplay;
     WorldManager wm;
     
     public static void main(String[] args) {
@@ -132,33 +131,27 @@ public class Main extends SimpleApplication {
         stateManager.attach(wm);
         WorldManager.root = rootNode;
         WorldManager.assetManager = assetManager;
+        WorldManager.main = this;
         WorldManager.init();
+        try {
+            c = new ClientConnector();
+            c.Connect();
+            Thread.sleep(500);
+            c.Login("NotHawthorne", "notarealpassword");
+        }
+        catch (Exception e) {
+            System.out.println("Error connecting to server" + e.toString());
+        }
         inputManager.addMapping("Select",
             new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); // trigger 2: left-button click
         inputManager.addMapping("Interact",
             new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)); // trigger 2: left-button click
         inputManager.addListener(this.actionListener, "Select");
         inputManager.addListener(this.actionListener, "Interact");
-        GuiGlobals.initialize(this);
-        BaseStyles.loadGlassStyle();
-        // Create a simple container for our elements
-        Container myWindow = new Container();
-        guiNode.attachChild(myWindow);
-
-        // Put it somewhere that we will see it.
-        // Note: Lemur GUI elements grow down from the upper left corner.
-        myWindow.setLocalTranslation(300, 300, 0);
 
         // Add some elements
-        unitSelectionDisplay = new Label("No Unit Selected");
-        myWindow.addChild(unitSelectionDisplay);
-        Button clickMe = myWindow.addChild(new Button("Click Me"));
-        clickMe.addClickCommands(new Command<Button>() {
-                @Override
-                public void execute( Button source ) {
-                    System.out.println("The world is yours.");
-                }
-            });
+        GuiManager.guiNode = guiNode;
+        GuiManager.createGameInterface();
         
         ((SimpleApplication) this).getFlyByCamera().setEnabled(false);
         inputManager.removeListener(flyCam);
@@ -170,18 +163,8 @@ public class Main extends SimpleApplication {
         gc.setEnabled(true);
         stateManager.attach(gc);
         WorldManager.setCamera(getCamera());
-        WorldManager.main = this;
         System.out.println("Here");
         HelloTerrain t = WorldManager.getChunk(0, 0);
-        try {
-            c = new ClientConnector();
-            c.Connect();
-            Thread.sleep(500);
-            c.Login("NotHawthorne", "notarealpassword");
-        }
-        catch (Exception e) {
-            System.out.println("Error connecting to server" + e.toString());
-        }
     }
 
     @Override

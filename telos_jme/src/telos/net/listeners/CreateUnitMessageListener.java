@@ -31,16 +31,18 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
     public void messageReceived(Client source, Message message) {
         if (message instanceof CreateUnitMessage) {
             //spawn unit in world
-            CreateUnitMessage m = (CreateUnitMessage) message;
-            Unit u = new Unit(m.getName(), m.getHp());
-            u.getController().setPhysicsSpace(WorldManager.state.getPhysicsSpace());
-            u.setUUID(m.getUUID());
-            u.setLoc(m.getLoc());
-            u.setModel(WorldManager.assetManager.loadModel("/Models/paladin_prop_j_nordstrom/paladin_prop_j_nordstrom.j3o"));
-            u.setLocalTranslation(u.getLoc());
-            u.getController().setPhysicsLocation(m.getLoc());
-            u.getController().setSpatial(u.getModel());
+            if (WorldManager.main == null)
+                System.out.println("prob");
             WorldManager.main.enqueue(() -> {
+                CreateUnitMessage m = (CreateUnitMessage) message;
+                Unit u = new Unit(m.getName(), m.getHp());
+                u.getController().setPhysicsSpace(WorldManager.state.getPhysicsSpace());
+                u.setUUID(m.getUUID());
+                u.setLoc(m.getLoc());
+                u.setModel(WorldManager.assetManager.loadModel("/Models/paladin_prop_j_nordstrom/paladin_prop_j_nordstrom.j3o"));
+                u.setLocalTranslation(u.getLoc());
+                u.getController().setPhysicsLocation(m.getLoc());
+                u.getController().setSpatial(u.getModel());
                 u.updateNav(WorldManager.getChunk(0,0).navMesh);
                 WorldManager.root.attachChild(u);
                 WorldManager.state.getPhysicsSpace().add(u);
@@ -52,8 +54,8 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
                 u.setLocalTranslation(snapToGroundVec);
                 System.out.println("after: " + snapToGroundVec.toString());
                 ((GameCam)WorldManager.state).setCenter(snapToGroundVec);
+                WorldManager.units.put(m.getUUID(), u);
             });
-            WorldManager.units.put(m.getUUID(), u);
             /*
             Box b = new Box(1, 1, 1);
             Geometry geom = new Geometry("Box", b);
