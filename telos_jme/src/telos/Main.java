@@ -32,10 +32,10 @@ import com.simsilica.lemur.Container;
 import com.simsilica.lemur.GuiGlobals;
 import com.simsilica.lemur.Label;
 import com.simsilica.lemur.style.BaseStyles;
-import telos.lib.core.Unit;
+import telos.lib.core.unit.Unit;
 import telos.lib.network.messages.unit.MoveUnitMessage;
 import telos.net.ClientConnector;
-import world.HelloTerrain;
+import world.ChunkTerrain;
 
 /**
  * This is the Main Class of your Game. You should only do initialization here.
@@ -112,7 +112,7 @@ public class Main extends SimpleApplication {
                             if (WorldManager.selectedUnit != null) {
                                 CollisionResults res = castFromCursor();
                                 Vector3f targetLoc = getCollidedLoc(res);
-                                c.getClient().send(new MoveUnitMessage(WorldManager.selectedUnit.getUUID(), targetLoc));
+                                c.getClient().send(new MoveUnitMessage(WorldManager.selectedUnit.getUUID(), targetLoc, WorldManager.selectedUnit.getId()));
                             }
                             break ;
                         default:
@@ -133,15 +133,6 @@ public class Main extends SimpleApplication {
         WorldManager.assetManager = assetManager;
         WorldManager.main = this;
         WorldManager.init();
-        try {
-            c = new ClientConnector();
-            c.Connect();
-            Thread.sleep(500);
-            c.Login("NotHawthorne", "notarealpassword");
-        }
-        catch (Exception e) {
-            System.out.println("Error connecting to server" + e.toString());
-        }
         inputManager.addMapping("Select",
             new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); // trigger 2: left-button click
         inputManager.addMapping("Interact",
@@ -164,7 +155,16 @@ public class Main extends SimpleApplication {
         stateManager.attach(gc);
         WorldManager.setCamera(getCamera());
         System.out.println("Here");
-        HelloTerrain t = WorldManager.getChunk(0, 0);
+        try {
+            c = new ClientConnector();
+            c.Connect();
+            Thread.sleep(500);
+            c.Login("NotHawthorne", "notarealpassword");
+        }
+        catch (Exception e) {
+            System.out.println("Error connecting to server" + e.toString());
+        }
+        //ChunkTerrain t = WorldManager.getChunk(0, 0);
     }
 
     @Override

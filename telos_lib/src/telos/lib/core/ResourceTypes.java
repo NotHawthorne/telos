@@ -9,6 +9,10 @@ package telos.lib.core;
  *
  * @author Beefaroni
  */
-public class UnitOrder {
-    
+public enum ResourceTypes {
+    CREDITS,
+    IRON,
+    LUMBER,
+    OIL,
+    CRYSTALS
 }

@@ -17,9 +17,12 @@ import com.jme3.network.serializing.Serializer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import telos.lib.network.messages.ChunkRequestMessage;
+import telos.lib.network.messages.ChunkResponseMessage;
 import telos.lib.network.messages.LoginResponseMessage;
 import telos.lib.network.messages.unit.CreateUnitMessage;
 import telos.lib.network.messages.unit.MoveUnitMessage;
+import telos.net.listeners.ChunkResponseMessageListener;
 import telos.net.listeners.CreateUnitMessageListener;
 import telos.net.listeners.LoginResponseMessageListener;
 import telos.net.listeners.MoveUnitMessageListener;
@@ -39,6 +42,8 @@ public class ClientConnector {
         _listeners.put(CreateUnitMessage.class, new CreateUnitMessageListener());
         _listeners.put(MoveUnitMessage.class, new MoveUnitMessageListener());
         _listeners.put(LoginResponseMessage.class, new LoginResponseMessageListener());
+        _listeners.put(ChunkRequestMessage.class, null);
+        _listeners.put(ChunkResponseMessage.class, new ChunkResponseMessageListener());
     }
     
     public ClientConnector() { }

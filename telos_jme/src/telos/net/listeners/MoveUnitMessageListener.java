@@ -10,7 +10,7 @@ import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import telos.WorldManager;
-import telos.lib.core.Unit;
+import telos.lib.core.unit.Unit;
 import telos.lib.network.messages.LoginMessage;
 import telos.lib.network.messages.unit.MoveUnitMessage;
 
@@ -25,7 +25,7 @@ public class MoveUnitMessageListener implements MessageListener<Client> {
           // do something with the message
           MoveUnitMessage m = (MoveUnitMessage) message;
           WorldManager.main.enqueue( () -> {
-              Unit u = WorldManager.units.get(m.getUUID());
+              Unit u = WorldManager.units.get(m.getDbId());
               u.setTravelDestination(m.getTargetLoc());
               if (WorldManager.selectedUnit == u) {
                   System.out.println("SNAPPING");

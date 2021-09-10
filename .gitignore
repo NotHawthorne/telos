@@ -12,3 +12,4 @@ telos_server/build
 .*
 gradle
 gradlew
+/telos_server/dist/

@@ -2,6 +2,9 @@ package world;
 
 import com.jme3.ai.navmesh.NavMesh;
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.state.AppState;
+import com.jme3.asset.AssetManager;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
@@ -10,6 +13,7 @@ import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
 import com.jme3.scene.Mesh;
+import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
 import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
@@ -26,12 +30,17 @@ import telos.WorldManager;
 
 /** Sample 10 - How to create fast-rendering terrains from heightmaps,
 and how to use texture splatting to make the terrain look good.  */
-public class HelloTerrain {
+public class ChunkTerrain {
 
   private TerrainQuad terrain;
   Material mat_terrain;
-  private int seed = 42;
+  private int _seed = 42;
   public NavMesh navMesh;
+    RigidBodyControl _con;
+
+    public ChunkTerrain() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
   
   public TerrainQuad getTerrain() { return terrain; }
       /**
@@ -89,31 +98,32 @@ public class HelloTerrain {
 
         return mesh2;
     }
-  public HelloTerrain() {
+  public ChunkTerrain(AssetManager m, Camera c, Node root, BulletAppState st, int seed) {
+      _seed = seed;
     /** 1. Create terrain material and load four textures into it. */
-    mat_terrain = new Material(WorldManager.assetManager,
+    mat_terrain = new Material(m,
             "Common/MatDefs/Terrain/Terrain.j3md");
 
     /** 1.1) Add ALPHA map (for red-blue-green coded splat textures) */
-    mat_terrain.setTexture("Alpha", WorldManager.assetManager.loadTexture(
+    mat_terrain.setTexture("Alpha", m.loadTexture(
             "Textures/Terrain/splat/alphamap.png"));
 
     /** 1.2) Add GRASS texture into the red layer (Tex1). */
-    Texture grass = WorldManager.assetManager.loadTexture(
+    Texture grass = m.loadTexture(
             "Textures/Terrain/splat/grass.jpg");
     grass.setWrap(WrapMode.Repeat);
     mat_terrain.setTexture("Tex1", grass);
     mat_terrain.setFloat("Tex1Scale", 64f);
 
     /** 1.3) Add DIRT texture into the green layer (Tex2) */
-    Texture dirt = WorldManager.assetManager.loadTexture(
+    Texture dirt = m.loadTexture(
             "Textures/Terrain/splat/dirt.jpg");
     dirt.setWrap(WrapMode.Repeat);
     mat_terrain.setTexture("Tex2", dirt);
     mat_terrain.setFloat("Tex2Scale", 32f);
 
     /** 1.4) Add ROAD texture into the blue layer (Tex3) */
-    Texture rock = WorldManager.assetManager.loadTexture(
+    Texture rock = m.loadTexture(
             "Textures/Terrain/splat/road.jpg");
     rock.setWrap(WrapMode.Repeat);
     mat_terrain.setTexture("Tex3", rock);
@@ -123,7 +133,7 @@ public class HelloTerrain {
     HillHeightMap heightmap = null;
     HillHeightMap.NORMALIZE_RANGE = 100;
     try {
-        heightmap = new HillHeightMap(513, 1000, 50, 100, seed); // byte 3 is a random seed
+        heightmap = new HillHeightMap(513, 1000, 50, 100, seed);
     } catch (Exception ex) {
         ex.printStackTrace();
     }
@@ -146,18 +156,23 @@ public class HelloTerrain {
     terrain.setLocalScale(1f, 1f, 1f);
 
     /** 5. The LOD (level of detail) depends on were the camera is: */
-    TerrainLodControl control = new TerrainLodControl(terrain, WorldManager.cam);
+    TerrainLodControl control = new TerrainLodControl(terrain, c);
     terrain.addControl(control);
     
     /** 6. collision */
     CollisionShape s = CollisionShapeFactory.createMeshShape(terrain);
-    RigidBodyControl c = new RigidBodyControl(s, 0);
-    terrain.addControl(c);
+    _con = new RigidBodyControl(s, 0);
+    terrain.addControl(_con);
     System.out.println("Calcing navmesh");
     navMesh = new NavMesh(getTerrainMesh());
-    
-    WorldManager.root.attachChild(terrain);
-    WorldManager.state.getPhysicsSpace().add(c);
     System.out.println("YOOOO");
+  }
+  public void spawnTerrain() {
+    WorldManager.root.attachChild(terrain);
+    WorldManager.state.getPhysicsSpace().add(_con);
+  }
+  public void despawnTerrain() {
+    terrain.removeFromParent();
+    WorldManager.state.getPhysicsSpace().remove(_con);
   }
 }

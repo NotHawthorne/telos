@@ -3,15 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package telos.lib.core.player;
+package telos.lib.core.unit;
 
 /**
  *
  * @author Beefaroni
  */
-public enum PlayerFactions {
-    NEUTRAL,
-    SPACE_MARINES,
-    SPACE_ORCS,
-    SPACE_ELVES
+public class UnitOrder {
+    
 }

@@ -9,7 +9,7 @@ import com.jme3.network.HostedConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import telos.lib.core.Player;
+import telos.lib.core.player.Player;
 
 /**
  *
@@ -32,8 +32,9 @@ public class UserLedger {
         loadPlayer(p.getUsername(), p);
     }
     
-    public static void addUser(String name, HostedConnection conn) {
+    public static Player addUser(String name, HostedConnection conn) {
         _users.put(name, conn);
+        return _playerData.get(name);
         //System.out.println("User " + name + " auth'd!");
     }
     public static void loadPlayer(String name, Player p) {

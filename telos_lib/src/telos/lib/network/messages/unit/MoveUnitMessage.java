@@ -17,12 +17,31 @@ import java.util.UUID;
 @Serializable
 public class MoveUnitMessage extends AbstractMessage {
     private String _id;
+    private int _dbId;
     private Vector3f _targetLoc;
     public MoveUnitMessage() { }
-    public MoveUnitMessage(String id, Vector3f targetLoc) {
+    public MoveUnitMessage(String id, Vector3f targetLoc, int dbId) {
         _id = id;
         _targetLoc = targetLoc;
+        _dbId = dbId;
     }
+
+    public String getId() {
+        return _id;
+    }
+
+    public void setId(String _id) {
+        this._id = _id;
+    }
+
+    public int getDbId() {
+        return _dbId;
+    }
+
+    public void setDbId(int _dbId) {
+        this._dbId = _dbId;
+    }
+    
     public void setUUID(String id) { _id = id; }
     public void setTargetLoc(Vector3f loc) { _targetLoc = loc; }
     public String getUUID() { return _id; }

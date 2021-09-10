@@ -22,8 +22,8 @@ import com.jme3.scene.Node;
 import com.jme3.scene.shape.Torus;
 import java.util.HashMap;
 import java.util.Map;
-import telos.lib.core.Unit;
-import world.HelloTerrain;
+import telos.lib.core.unit.Unit;
+import world.ChunkTerrain;
 
 /**
  *
@@ -35,10 +35,12 @@ public class WorldManager extends AbstractAppState {
     public static Camera cam;
     public static BulletAppState state;
     public static Main main;
-    public static Map<Integer, Map<Integer, HelloTerrain>> chunks = new HashMap<Integer, Map<Integer, HelloTerrain>>();
-    public static Map<String, Unit> units =  new HashMap<String, Unit>();
+    public static Map<Integer, Map<Integer, ChunkTerrain>> chunks = new HashMap<Integer, Map<Integer, ChunkTerrain>>();
+    public static Map<Integer, Unit> units =  new HashMap<Integer, Unit>();
     public static Unit selectedUnit;
     public static Geometry mark;
+    public static ChunkTerrain _curChunk = null;
+    public static Vector2f _loadingChunk = null;
     
     
     protected static void initMark() {
@@ -71,13 +73,15 @@ public class WorldManager extends AbstractAppState {
     public static void select(Unit target) {
         selectedUnit = target;
         GuiManager.unitSelectionDisplay.setText(target == null ? "None" : target.getName());
+        if (target != null) {
+            System.out.println(target.toString());
+            System.out.println("Selected " + target.getClass().getSimpleName());
+        }
         snapMarker(target);
     }
     
     public static void init() {
-        System.out.println("Init");
         initMark();
-        System.out.println("Init2");
     }
     
     public static void setRoot(Node newRoot) {
@@ -91,14 +95,33 @@ public class WorldManager extends AbstractAppState {
     public static void setAssetManager(AssetManager man) { assetManager = man; }
     public static void setCamera(Camera newCam) { cam = newCam; }
     
-    public static HelloTerrain getChunk(int x, int y) {
+    public static ChunkTerrain getChunk(int x, int y, int seed) {
         if (!chunks.containsKey(y)) {
-            chunks.put(y, new HashMap<Integer, HelloTerrain>());
+            chunks.put(y, new HashMap<Integer, ChunkTerrain>());
         }
         if (!chunks.get(y).containsKey(x)) {
-            chunks.get(y).put(x, new HelloTerrain());
+            System.out.println("Creating new chunk");
+            chunks.get(y).put(x, new ChunkTerrain(assetManager, cam, root, state, seed));
         }
         return chunks.get(y).get(x);
+    }
+    
+    public static ChunkTerrain getChunk(int x, int y) {
+        if (!chunks.containsKey(y) || !chunks.get(y).containsKey(x)) {
+            return null;
+        }
+        return chunks.get(y).get(x);
+    }
+    
+    public static void loadChunk(int x, int y, int seed) {
+        _loadingChunk = new Vector2f(x, y);
+        if (_curChunk != null) {
+            _curChunk.despawnTerrain();
+            _curChunk = null;
+        }
+        _curChunk = getChunk(x, y, seed);
+        _curChunk.spawnTerrain();
+        _loadingChunk = null;
     }
     
     @Override

@@ -5,16 +5,19 @@
  */
 package server.listeners;
 
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import java.util.UUID;
+import server.GameServer;
 import server.UnitLedger;
 import server.UserLedger;
-import telos.lib.core.Player;
-import telos.lib.core.Unit;
+import telos.lib.core.player.Player;
+import telos.lib.core.unit.Unit;
 import telos.lib.core.player.PlayerFactions;
+import telos.lib.core.unit.UnitTypes;
 
 import telos.lib.network.messages.LoginMessage;
 import telos.lib.network.messages.LoginResponseMessage;
@@ -48,14 +51,12 @@ public class LoginMessageListener implements MessageListener<HostedConnection> {
           }
           // return if exists
           else if (UserLedger.getPlayer(loginMessage.getUsername()).getPassword() == loginMessage.getPassword().hashCode()) {
-                UserLedger.addUser(loginMessage.getUsername(), source);
+                Player p = UserLedger.addUser(loginMessage.getUsername(), source);
                 source.send(new LoginResponseMessage(true, 0, 0));
-                Unit u = new Unit("Worker", 50);
-                u.setUUID(UUID.randomUUID().toString());
-                u.setLoc(new Vector3f(1.0f, 1.0f, 1.0f));
-                u.setOwner(loginMessage.getUsername());
-                UnitLedger.addUnit(u.getUUID(), u);
-                source.send(new CreateUnitMessage(u.getUUID(), u.getLoc(), u.getName(), u.getHp()));
+                Unit u2 = UnitLedger.createUnit(UnitLedger.getUnitInfo(UnitTypes.WORKER), p, GameServer.getChunk(new Vector2f(0, 0)), new Vector3f(1.0f, 1.0f, 1.0f));
+                //Unit u = new Unit("Worker", 50);
+                u2.setLoc(new Vector3f(1.0f, 1.0f, 1.0f));
+                source.send(new CreateUnitMessage(u2));
                 System.out.println("Successful login");
           }
           else {

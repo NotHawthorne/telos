@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package telos.lib.core;
+package telos.lib.core.player;
 
+import com.jme3.math.Vector2f;
 import telos.lib.core.player.PlayerFactions;
 
 /**
@@ -13,6 +14,7 @@ import telos.lib.core.player.PlayerFactions;
  */
 
 public class Player {
+    private int _id;
     private String _username;
     private int _password;
     private int _credits;
@@ -21,6 +23,50 @@ public class Player {
     private int _oil;
     private int _crystals;
     private PlayerFactions _faction;
+    private Vector2f _chunkCoords;
+    private boolean _isOnline;
+    private int _ownedUnits;
+    private int _ownedStructures;
+
+    public int getId() {
+        return _id;
+    }
+
+    public void setId(int _id) {
+        this._id = _id;
+    }
+
+    public Vector2f getChunkCoords() {
+        return _chunkCoords;
+    }
+
+    public void setChunkCoords(Vector2f _chunkCoords) {
+        this._chunkCoords = _chunkCoords;
+    }
+
+    public boolean isIsOnline() {
+        return _isOnline;
+    }
+
+    public void setIsOnline(boolean _isOnline) {
+        this._isOnline = _isOnline;
+    }
+
+    public int getOwnedUnits() {
+        return _ownedUnits;
+    }
+
+    public void setOwnedUnits(int _ownedUnits) {
+        this._ownedUnits = _ownedUnits;
+    }
+
+    public int getOwnedStructures() {
+        return _ownedStructures;
+    }
+
+    public void setOwnedStructures(int _ownedStructures) {
+        this._ownedStructures = _ownedStructures;
+    }
 
     public int getPassword() {
         return _password;

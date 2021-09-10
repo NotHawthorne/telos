@@ -5,6 +5,7 @@
  */
 package server;
 
+import com.jme3.math.Vector2f;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.HostedConnection;
 import server.listeners.LoginMessageListener;
@@ -17,7 +18,10 @@ import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import server.listeners.ChunkRequestMessageListener;
 import server.listeners.MoveUnitMessageListener;
+import telos.lib.network.messages.ChunkRequestMessage;
+import telos.lib.network.messages.ChunkResponseMessage;
 import telos.lib.network.messages.LoginMessage;
 import telos.lib.network.messages.LoginResponseMessage;
 import telos.lib.network.messages.unit.CreateUnitMessage;
@@ -30,8 +34,9 @@ import telos.lib.network.messages.unit.MoveUnitMessage;
 public class GameServer {
     private Server _server;
     private int _port = 4242;
-    public Map<Class<? extends AbstractMessage>, MessageListener> _listeners = new HashMap<>();
-    public Map<String, HostedConnection> _authenticatedUsers = new HashMap<>();
+    public static Map<Class<? extends AbstractMessage>, MessageListener> _listeners = new HashMap<>();
+    public static Map<String, HostedConnection> _authenticatedUsers = new HashMap<>();
+    public static Map<Vector2f, Chunk> _chunks = new HashMap<>();
     public int seed = 42;
     //private LoginMessageListener _listener;
     
@@ -40,6 +45,19 @@ public class GameServer {
         _listeners.put(CreateUnitMessage.class, null);
         _listeners.put(MoveUnitMessage.class, new MoveUnitMessageListener());
         _listeners.put(LoginResponseMessage.class, null);
+        _listeners.put(ChunkRequestMessage.class, new ChunkRequestMessageListener());
+        _listeners.put(ChunkResponseMessage.class, null);
+    }
+    
+    public static Chunk getChunk(Vector2f coords) {
+        if (_chunks.get(coords) == null) {
+            _chunks.put(coords, new Chunk(coords));
+        }
+        return _chunks.get(coords);
+    }
+    
+    public Chunk getRandomStartingChunk() {
+        return null;
     }
     
     public GameServer() {
@@ -49,6 +67,12 @@ public class GameServer {
     public GameServer(int port) {
         setPort(port);
         //_listener = new LoginMessageListener();
+    }
+    
+    public static int genSeed(int x, int y) {
+        int xx = x % 2 == 0 ? x / 2 : (x + 1) / -2;
+        int yy = y % 2 == 0 ? y / 2 : (y + 1) / -2;
+        return (xx >= yy ? (xx * xx + xx + yy) : (yy * yy + xx));
     }
     
     public void startServer() {
