@@ -17,6 +17,7 @@ import com.jme3.network.serializing.Serializer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import telos.WorldManager;
 import telos.lib.network.messages.ChunkRequestMessage;
 import telos.lib.network.messages.ChunkResponseMessage;
 import telos.lib.network.messages.LoginResponseMessage;
@@ -53,6 +54,17 @@ public class ClientConnector {
         _port = port;
     }
     
+    public void Login() {
+        try {
+            Connect();
+            Thread.sleep(500);
+            _client.send(new LoginMessage(WorldManager.username, WorldManager.password));
+        }
+        catch (Exception e) {
+            System.out.println("Error connecting to server" + e.toString());
+        }
+    }
+    
     public void Connect() {
         try {
             registerListeners();
@@ -70,11 +82,6 @@ public class ClientConnector {
         } catch (Exception e) {
             System.out.println("Error connecting to server..." + e.toString());
         }
-    }
-    
-    // should maybe return response
-    public void Login(String username, String password) {
-        _client.send(new LoginMessage(username, password));
     }
 
     public Client getClient() {

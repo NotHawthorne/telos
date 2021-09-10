@@ -5,11 +5,17 @@
  */
 package telos;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.collision.CollisionResults;
+import com.jme3.input.InputManager;
+import com.jme3.input.MouseInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -23,6 +29,7 @@ import com.jme3.scene.shape.Torus;
 import java.util.HashMap;
 import java.util.Map;
 import telos.lib.core.unit.Unit;
+import telos.net.ClientConnector;
 import world.ChunkTerrain;
 
 /**
@@ -41,6 +48,11 @@ public class WorldManager extends AbstractAppState {
     public static Geometry mark;
     public static ChunkTerrain _curChunk = null;
     public static Vector2f _loadingChunk = null;
+    public static String username = "";
+    public static String password = "";
+    public static ClientConnector conn;
+    public static ActionListener actionListener;
+    public static InputManager inputManager;
     
     
     protected static void initMark() {
@@ -68,6 +80,44 @@ public class WorldManager extends AbstractAppState {
         } else {
             root.detachChild(mark);
         }
+    }
+    
+    public static void initWorld(AppStateManager stateManager, Node rootNode, AssetManager assetManager, 
+            Main m, WorldManager wm, InputManager inputManager, ActionListener actionListener, 
+            Node guiNode) {
+        stateManager.attach(wm);
+        WorldManager.root = rootNode;
+        WorldManager.assetManager = assetManager;
+        WorldManager.main = m;
+        WorldManager.actionListener = actionListener;
+        WorldManager.inputManager = inputManager;
+        WorldManager.init();
+
+        // Add some elements
+        GuiManager.guiNode = guiNode;
+        GuiManager.createLoginInterface();
+        
+        ((SimpleApplication) m).getFlyByCamera().setEnabled(false);
+        GameCam gc = new GameCam(GameCam.UpVector.Y_UP);
+        WorldManager.state = gc;
+        WorldManager.state.setDebugEnabled(true);
+        gc.registerWithInput(inputManager);
+        gc.setCenter(new Vector3f(1,1,1));
+        gc.setEnabled(true);
+        stateManager.attach(gc);
+        WorldManager.setCamera(m.getCamera());
+        System.out.println("Here");
+        conn = new ClientConnector();
+        //ChunkTerrain t = WorldManager.getChunk(0, 0);
+    }
+    
+    public static void registerActions() {
+        inputManager.addMapping("Select",
+            new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); // trigger 2: left-button clicl
+        inputManager.addMapping("Interact",
+            new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)); // trigger 2: left-button click
+        inputManager.addListener(actionListener, "Select");
+        inputManager.addListener(actionListener, "Interact");
     }
     
     public static void select(Unit target) {

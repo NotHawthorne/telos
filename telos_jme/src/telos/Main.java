@@ -44,7 +44,6 @@ import world.ChunkTerrain;
  */
 public class Main extends SimpleApplication {
     
-    ClientConnector c;
     ActionListener actionListener;
     WorldManager wm;
     
@@ -112,7 +111,7 @@ public class Main extends SimpleApplication {
                             if (WorldManager.selectedUnit != null) {
                                 CollisionResults res = castFromCursor();
                                 Vector3f targetLoc = getCollidedLoc(res);
-                                c.getClient().send(new MoveUnitMessage(WorldManager.selectedUnit.getUUID(), targetLoc, WorldManager.selectedUnit.getId()));
+                                WorldManager.conn.getClient().send(new MoveUnitMessage(WorldManager.selectedUnit.getUUID(), targetLoc, WorldManager.selectedUnit.getId()));
                             }
                             break ;
                         default:
@@ -126,45 +125,10 @@ public class Main extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        System.out.println("Starting");
         wm = new WorldManager();
-        stateManager.attach(wm);
-        WorldManager.root = rootNode;
-        WorldManager.assetManager = assetManager;
-        WorldManager.main = this;
-        WorldManager.init();
-        inputManager.addMapping("Select",
-            new MouseButtonTrigger(MouseInput.BUTTON_LEFT)); // trigger 2: left-button click
-        inputManager.addMapping("Interact",
-            new MouseButtonTrigger(MouseInput.BUTTON_RIGHT)); // trigger 2: left-button click
-        inputManager.addListener(this.actionListener, "Select");
-        inputManager.addListener(this.actionListener, "Interact");
-
-        // Add some elements
-        GuiManager.guiNode = guiNode;
-        GuiManager.createGameInterface();
-        
-        ((SimpleApplication) this).getFlyByCamera().setEnabled(false);
+        System.out.println("Starting");
         inputManager.removeListener(flyCam);
-        GameCam gc = new GameCam(GameCam.UpVector.Y_UP);
-        WorldManager.state = gc;
-        WorldManager.state.setDebugEnabled(true);
-        gc.registerWithInput(inputManager);
-        gc.setCenter(new Vector3f(1,1,1));
-        gc.setEnabled(true);
-        stateManager.attach(gc);
-        WorldManager.setCamera(getCamera());
-        System.out.println("Here");
-        try {
-            c = new ClientConnector();
-            c.Connect();
-            Thread.sleep(500);
-            c.Login("NotHawthorne", "notarealpassword");
-        }
-        catch (Exception e) {
-            System.out.println("Error connecting to server" + e.toString());
-        }
-        //ChunkTerrain t = WorldManager.getChunk(0, 0);
+        WorldManager.initWorld(stateManager, rootNode, assetManager, this, wm, inputManager, actionListener, guiNode);
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.network.Client;
 import com.jme3.network.MessageListener;
 import com.jme3.network.Message;
+import telos.WorldManager;
 import telos.lib.network.messages.ChunkRequestMessage;
 import telos.lib.network.messages.LoginMessage;
 import telos.lib.network.messages.LoginResponseMessage;
@@ -28,6 +29,7 @@ public class LoginResponseMessageListener implements MessageListener<Client> {
                 System.exit(1);
             }
             //load world
+            WorldManager.registerActions();
             source.send(new ChunkRequestMessage(new Vector2f(0, 0)));
         }
         else {

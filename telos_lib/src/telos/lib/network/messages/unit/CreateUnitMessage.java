@@ -46,6 +46,7 @@ public class CreateUnitMessage extends AbstractMessage {
         _owner = u.getOwner();
         _chunkX = u.getChunkX();
         _chunkY = u.getChunkY();
+        _name = u.getName();
     }
 
     public int getDbId() {
@@ -99,7 +100,6 @@ public class CreateUnitMessage extends AbstractMessage {
     public String getOwner() {
         return _owner;
     }
-
     public void setOwner(String _owner) {
         this._owner = _owner;
     }
