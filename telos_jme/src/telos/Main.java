@@ -1,41 +1,15 @@
 package telos;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AppState;
-import com.jme3.bullet.PhysicsSpace;
-import static com.jme3.bullet.PhysicsSpace.getPhysicsSpace;
-import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.input.KeyInput;
-import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
-import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
-import com.jme3.network.Client;
-import com.jme3.network.Network;
 import com.jme3.renderer.RenderManager;
-import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Box;
-import com.jme3.scene.shape.Sphere;
-import com.jme3.scene.shape.Torus;
-import com.simsilica.lemur.Button;
-import com.simsilica.lemur.Command;
-import com.simsilica.lemur.Container;
-import com.simsilica.lemur.GuiGlobals;
-import com.simsilica.lemur.Label;
-import com.simsilica.lemur.style.BaseStyles;
 import telos.lib.core.unit.Unit;
 import telos.lib.network.messages.unit.MoveUnitMessage;
-import telos.net.ClientConnector;
-import world.ChunkTerrain;
 
 /**
  * This is the Main Class of your Game. You should only do initialization here.
@@ -128,6 +102,7 @@ public class Main extends SimpleApplication {
         wm = new WorldManager();
         System.out.println("Starting");
         inputManager.removeListener(flyCam);
+        setPauseOnLostFocus(false);
         WorldManager.initWorld(stateManager, rootNode, assetManager, this, wm, inputManager, actionListener, guiNode);
     }
 

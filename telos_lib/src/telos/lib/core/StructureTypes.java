@@ -9,21 +9,20 @@ package telos.lib.core;
  *
  * @author Alyssa Kozma
  */
-public interface StructureTypes {
-    public enum SpaceMarines implements StructureTypes {
-        COMMAND_CENTER,
-        FACTORY,
-        EXTRACTOR,
-        TURRET,
-    }
-    public enum SpaceOrcs implements StructureTypes {
-        KEEP,
-        WARRENS,
-        MINE,
-    }
-    public enum SpaceElves implements StructureTypes {
-        TEMPLE,
-        TRAINING_GROUNDS,
-        HARVEST_CIRCLE,
-    }
+public enum StructureTypes {
+    //space marine
+    COMMAND_CENTER,
+    FACTORY,
+    EXTRACTOR,
+    TURRET,
+    
+    //space orc
+    KEEP,
+    WARRENS,
+    MINE,
+    
+    //space elf
+    TEMPLE,
+    TRAINING_GROUNDS,
+    HARVEST_CIRCLE,
 }

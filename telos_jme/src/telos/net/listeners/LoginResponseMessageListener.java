@@ -29,7 +29,6 @@ public class LoginResponseMessageListener implements MessageListener<Client> {
                 System.exit(1);
             }
             //load world
-            WorldManager.registerActions();
             source.send(new ChunkRequestMessage(new Vector2f(0, 0)));
         }
         else {

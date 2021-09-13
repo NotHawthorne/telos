@@ -7,7 +7,7 @@ package telos.lib.core;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public enum ResourceTypes {
     CREDITS,

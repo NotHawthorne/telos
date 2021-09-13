@@ -16,7 +16,7 @@ import telos.lib.network.messages.unit.MoveUnitMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class MoveUnitMessageListener implements MessageListener<Client> {
     @Override
@@ -24,6 +24,7 @@ public class MoveUnitMessageListener implements MessageListener<Client> {
         if (message instanceof MoveUnitMessage) {
           // do something with the message
           MoveUnitMessage m = (MoveUnitMessage) message;
+          System.out.println("recv");
           WorldManager.main.enqueue( () -> {
               Unit u = WorldManager.units.get(m.getDbId());
               u.setTravelDestination(m.getTargetLoc());

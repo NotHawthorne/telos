@@ -24,9 +24,9 @@ public class Player {
     private int _crystals;
     private PlayerFactions _faction;
     private Vector2f _chunkCoords;
-    private boolean _isOnline;
-    private int _ownedUnits;
-    private int _ownedStructures;
+    private boolean _isOnline = false;
+    private int _ownedUnits = 0;
+    private int _ownedStructures = 0;
 
     public int getId() {
         return _id;

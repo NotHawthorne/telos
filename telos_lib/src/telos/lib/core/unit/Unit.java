@@ -25,7 +25,7 @@ import telos.lib.network.messages.unit.CreateUnitMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class Unit extends WorldEntity {
     private int _id;

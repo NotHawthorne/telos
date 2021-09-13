@@ -30,7 +30,7 @@ import telos.net.listeners.MoveUnitMessageListener;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class ClientConnector {
     private Client _client;

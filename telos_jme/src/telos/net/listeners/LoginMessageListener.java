@@ -12,7 +12,7 @@ import telos.lib.network.messages.LoginMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class LoginMessageListener implements MessageListener<Client> {
     @Override

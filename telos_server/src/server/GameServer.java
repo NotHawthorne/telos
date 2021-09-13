@@ -36,7 +36,7 @@ public class GameServer {
     private int _port = 4242;
     public static Map<Class<? extends AbstractMessage>, MessageListener> _listeners = new HashMap<>();
     public static Map<String, HostedConnection> _authenticatedUsers = new HashMap<>();
-    public static Map<Vector2f, Chunk> _chunks = new HashMap<>();
+    public static Map<Integer, Chunk> _chunks = new HashMap<>();
     public int seed = 42;
     //private LoginMessageListener _listener;
     
@@ -50,10 +50,10 @@ public class GameServer {
     }
     
     public static Chunk getChunk(Vector2f coords) {
-        if (_chunks.get(coords) == null) {
-            _chunks.put(coords, new Chunk(coords));
+        if (_chunks.get(GameServer.genSeed((int)coords.x, (int)coords.y)) == null) {
+            _chunks.put(GameServer.genSeed((int)coords.x, (int)coords.y), new Chunk(coords));
         }
-        return _chunks.get(coords);
+        return _chunks.get(GameServer.genSeed((int)coords.x, (int)coords.y));
     }
     
     public Chunk getRandomStartingChunk() {

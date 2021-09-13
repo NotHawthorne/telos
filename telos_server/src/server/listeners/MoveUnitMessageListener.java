@@ -5,9 +5,11 @@
  */
 package server.listeners;
 
+import com.jme3.math.Vector2f;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
+import server.GameServer;
 import server.UnitLedger;
 import server.UserLedger;
 import telos.lib.core.player.Player;
@@ -17,7 +19,7 @@ import telos.lib.network.messages.unit.MoveUnitMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class MoveUnitMessageListener implements MessageListener<HostedConnection> {
     @Override
@@ -37,6 +39,11 @@ public class MoveUnitMessageListener implements MessageListener<HostedConnection
               UnitLedger.getUnit(m.getDbId()).setLoc(m.getTargetLoc());
               System.out.println("Moved " + m.getUUID() + " to " + m.getTargetLoc().toString());
               source.send(message);
+              
+              //echo out to all players observing chunk
+              for (Player pl : GameServer.getChunk(new Vector2f(0, 0)).getPlayers().values()) {
+                  UserLedger.getConn(pl.getUsername()).send(message);
+              }
           }
           else {
               System.out.println("Someone tried to send a malicious packet to move someone elses unit!");

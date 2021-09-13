@@ -5,6 +5,7 @@
  */
 package server;
 
+import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,16 +13,22 @@ import java.util.UUID;
 import telos.lib.core.player.Player;
 import telos.lib.core.unit.Unit;
 import telos.lib.core.unit.UnitTypes;
+import telos.lib.network.messages.unit.CreateUnitMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class UnitLedger {
     private static Map<Integer, Unit> _units = new HashMap<>();
     private static Map<UnitTypes, Unit> _unitInfo = new HashMap<>();
     public static void addUnit(Unit u) {
         _units.put(u.getId(), u);
+        Player owner = UserLedger.getPlayer(u.getOwner());
+        owner.setOwnedUnits(owner.getOwnedUnits() + 1);
+        for (Player p : GameServer.getChunk(new Vector2f(u.getChunkX(), u.getChunkY())).getPlayers().values()) {
+            UserLedger.getConn(p.getUsername()).send(new CreateUnitMessage(u));
+        }
     }
 
     // u = from unitInfo

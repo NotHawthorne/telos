@@ -14,7 +14,7 @@ import telos.lib.core.unit.Unit;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class Chunk {
     private int _seed = 0;

@@ -7,7 +7,7 @@ package telos.lib.core.unit;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public enum UnitTypes {
     WORKER,

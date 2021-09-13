@@ -53,10 +53,13 @@ public class LoginMessageListener implements MessageListener<HostedConnection> {
           else if (UserLedger.getPlayer(loginMessage.getUsername()).getPassword() == loginMessage.getPassword().hashCode()) {
                 Player p = UserLedger.addUser(loginMessage.getUsername(), source);
                 source.send(new LoginResponseMessage(true, 0, 0));
-                Unit u2 = UnitLedger.createUnit(UnitLedger.getUnitInfo(UnitTypes.WORKER), p, GameServer.getChunk(new Vector2f(0, 0)), new Vector3f(1.0f, 1.0f, 1.0f));
-                //Unit u = new Unit("Worker", 50);
-                u2.setLoc(new Vector3f(1.0f, 1.0f, 1.0f));
-                source.send(new CreateUnitMessage(u2));
+                
+                //if they are logging in and have no units, give them a welfare worker
+                if (p.getOwnedUnits() == 0) {
+                    Unit u2 = UnitLedger.createUnit(UnitLedger.getUnitInfo(UnitTypes.WORKER), p, GameServer.getChunk(new Vector2f(0, 0)), new Vector3f(1.0f, 1.0f, 1.0f));
+                    u2.setLoc(new Vector3f(1.0f, 1.0f, 1.0f));
+                    source.send(new CreateUnitMessage(u2));
+                }
                 System.out.println("Successful login");
           }
           else {

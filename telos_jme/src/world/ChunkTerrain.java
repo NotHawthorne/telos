@@ -8,7 +8,9 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
@@ -165,6 +167,10 @@ public class ChunkTerrain {
     terrain.addControl(_con);
     System.out.println("Calcing navmesh");
     navMesh = new NavMesh(getTerrainMesh());
+    DirectionalLight sun = new DirectionalLight();
+    sun.setColor(ColorRGBA.White);
+    sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
+    WorldManager.root.addLight(sun);
     System.out.println("YOOOO");
   }
   public void spawnTerrain() {

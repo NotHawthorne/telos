@@ -25,7 +25,7 @@ import telos.lib.network.messages.ChunkRequestMessage;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class CreateUnitMessageListener implements MessageListener<Client> {
     @Override
@@ -53,7 +53,7 @@ public class CreateUnitMessageListener implements MessageListener<Client> {
                 u.spawn();
                 u.getController().setPhysicsSpace(WorldManager.state.getPhysicsSpace());
                 u.setUUID(m.getUUID());
-                u.setModel(WorldManager.assetManager.loadModel("/Models/paladin_prop_j_nordstrom/paladin_prop_j_nordstrom.j3o"));
+                u.setModel(WorldManager.assetManager.loadModel("/Models/unit_Harvester_A/unit_Harvester_A.j3o"));
                 u.setLocalTranslation(u.getLoc());
                 u.getController().setPhysicsLocation(m.getLoc());
                 u.getController().setSpatial(u.getModel());

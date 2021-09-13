@@ -7,7 +7,7 @@ package telos.lib.core.player;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public enum PlayerFactions {
     NEUTRAL,

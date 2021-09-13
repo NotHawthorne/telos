@@ -24,7 +24,7 @@ import telos.lib.core.player.PlayerFactions;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class Scribe {
     private static Connection _conn;
@@ -127,6 +127,7 @@ public class Scribe {
                 while (res.next()) {
                     // load from template
                     Unit u = new Unit(inf.get(UnitTypes.valueOf(res.getString("type"))));
+                    Player owner = UserLedger.getPlayer(res.getString("owner_id"));
                     
                     // get info about this one
                     u.setId(res.getInt("id"));
@@ -140,6 +141,7 @@ public class Scribe {
                     System.out.println("Loaded spawned unit");
                     System.out.println(u.toString());
                     spawnedUnits++;
+                    owner.setOwnedUnits(owner.getOwnedUnits() + 1);
                 }
             }
         } catch (Exception e) {

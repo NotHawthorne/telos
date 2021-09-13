@@ -18,7 +18,7 @@ import com.simsilica.lemur.style.ElementId;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class GuiManager {
     public static Label unitSelectionDisplay;
@@ -27,8 +27,10 @@ public class GuiManager {
     public static TextField usernameEntry;
     public static TextField passwordEntry;
     public static Button loginButton;
+    public static boolean gameInterfaceLoaded = false;
     
     public static void createGameInterface() {
+        destroyLoginInterface();
         // Create a simple container for our elements
         Container myWindow = new Container();
         guiNode.attachChild(myWindow);
@@ -45,6 +47,8 @@ public class GuiManager {
                     System.out.println("The world is yours.");
                 }
             });
+        WorldManager.registerActions();
+        gameInterfaceLoaded = true;
     }
     public static void createLoginInterface() {
         GuiGlobals.initialize(WorldManager.main);
@@ -73,6 +77,7 @@ public class GuiManager {
     }
     
     public static void destroyLoginInterface() {
+        
         win.removeFromParent();
     }
 }

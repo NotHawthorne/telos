@@ -7,7 +7,7 @@ package telos.lib.core;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class ResourceCost {
     private ResourceTypes _type;

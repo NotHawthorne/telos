@@ -34,7 +34,7 @@ import world.ChunkTerrain;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class WorldManager extends AbstractAppState {
     public static Node root;
@@ -93,7 +93,7 @@ public class WorldManager extends AbstractAppState {
         WorldManager.inputManager = inputManager;
         WorldManager.init();
 
-        // Add some elements
+        // create login window
         GuiManager.guiNode = guiNode;
         GuiManager.createLoginInterface();
         

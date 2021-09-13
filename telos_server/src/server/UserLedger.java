@@ -13,7 +13,7 @@ import telos.lib.core.player.Player;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class UserLedger {
     private static Map<String, HostedConnection> _users = new HashMap<>();

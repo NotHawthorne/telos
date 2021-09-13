@@ -10,7 +10,7 @@ import com.jme3.scene.Node;
 
 /**
  *
- * @author Beefaroni
+ * @author Alyssa Kozma
  */
 public class WorldEntity extends Node {
     public String _id;

@@ -9,6 +9,7 @@ import com.jme3.network.Client;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import telos.GameCam;
+import telos.GuiManager;
 import telos.WorldManager;
 import telos.lib.network.messages.ChunkResponseMessage;
 
@@ -24,6 +25,8 @@ public class ChunkResponseMessageListener implements MessageListener<Client> {
                 ChunkResponseMessage m = (ChunkResponseMessage) message;
                 System.out.println("Loading chunk!");
                 WorldManager.loadChunk(m.getX(), m.getY(), m.getSeed());
+                if (!GuiManager.gameInterfaceLoaded)
+                    GuiManager.createGameInterface();
             });
         }
     }

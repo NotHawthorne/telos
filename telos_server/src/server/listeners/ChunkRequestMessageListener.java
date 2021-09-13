@@ -10,6 +10,7 @@ import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
 import server.Chunk;
 import server.GameServer;
+import server.UserLedger;
 import telos.lib.core.unit.Unit;
 import telos.lib.network.messages.ChunkRequestMessage;
 import telos.lib.network.messages.ChunkResponseMessage;
@@ -28,6 +29,7 @@ public class ChunkRequestMessageListener implements MessageListener<HostedConnec
           // do something with the message
           ChunkRequestMessage chunkRequestMessage = (ChunkRequestMessage) message;
           Chunk c = GameServer.getChunk(chunkRequestMessage.getCoords());
+          c.addPlayer(UserLedger.getPlayer(source));
           source.send(new ChunkResponseMessage(c.getSeed(), c.getCoords()));
           
           //send units for that chunk
