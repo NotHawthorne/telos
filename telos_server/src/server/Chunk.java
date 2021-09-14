@@ -28,6 +28,10 @@ public class Chunk {
         _seed = GameServer.genSeed((int)coords.x, (int)coords.y);
     }
     
+    public void addStructure(Structure s) {
+        _structures.put(s.getId(), s);
+    }
+    
     public int getPlayerCount() {
         return _players.size();
     }

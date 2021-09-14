@@ -48,6 +48,9 @@ public class Unit extends WorldEntity {
     private PlayerFactions _faction;
     private int _chunkX;
     private int _chunkY;
+    private String _modelPath;
+    private float _attackSpeed;
+    private int _movementSpeed;
     
     public Unit() { super(); }
     public Unit(String name, int hp) {
@@ -76,6 +79,9 @@ public class Unit extends WorldEntity {
         _canBuild = u.canBuild();
         _attackRange = u.getAttackRange();
         _faction = u.getFaction();
+        _modelPath = u.getModelPath();
+        _attackSpeed = u.getAttackSpeed();
+        _attackRange = u.getAttackRange();
     }
     
     public Unit(CreateUnitMessage m) {
@@ -89,6 +95,22 @@ public class Unit extends WorldEntity {
         _chunkX = m.getChunkX();
         _chunkY = m.getChunkY();
     }
+
+    public float getAttackSpeed() {
+        return _attackSpeed;
+    }
+
+    public void setAttackSpeed(float _attackSpeed) {
+        this._attackSpeed = _attackSpeed;
+    }
+
+    public int getMovementSpeed() {
+        return _movementSpeed;
+    }
+
+    public void setMovementSpeed(int _movementSpeed) {
+        this._movementSpeed = _movementSpeed;
+    }
     
     public void spawn() {
         _shape = new CapsuleCollisionShape(1.5f, 6f, 1);
@@ -99,6 +121,14 @@ public class Unit extends WorldEntity {
         _controller.setApplyPhysicsLocal(true);
         _controller.setFallSpeed(15f);
         _controller.setLinearVelocity(new Vector3f(0, 1, 0));
+    }
+
+    public String getModelPath() {
+        return _modelPath;
+    }
+
+    public void setModelPath(String _modelPath) {
+        this._modelPath = _modelPath;
     }
     
     @Override

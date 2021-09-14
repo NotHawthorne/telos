@@ -1,8 +1,6 @@
-package world;
+package telos.lib.core;
 
 import com.jme3.ai.navmesh.NavMesh;
-import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AppState;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -17,18 +15,14 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer;
-import com.jme3.terrain.Terrain;
 import com.jme3.terrain.geomipmap.TerrainLodControl;
-import com.jme3.terrain.heightmap.AbstractHeightMap;
 import com.jme3.terrain.geomipmap.TerrainQuad;
-import com.jme3.terrain.geomipmap.lodcalc.DistanceLodCalculator;
 import com.jme3.terrain.heightmap.HillHeightMap; // for exercise 2
-import com.jme3.terrain.heightmap.ImageBasedHeightMap;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
-import java.util.ArrayList;
-import java.util.List;
-import telos.WorldManager;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 /** Sample 10 - How to create fast-rendering terrains from heightmaps,
 and how to use texture splatting to make the terrain look good.  */
@@ -39,6 +33,12 @@ public class ChunkTerrain {
   private int _seed = 42;
   public NavMesh navMesh;
     RigidBodyControl _con;
+    private AssetManager _assetManager;
+    private Node _root;
+    private BulletAppState _state;
+    private Mesh _mesh = null;
+    private Random _rng;
+    private Map<ResourceNode, Vector3f> _resources = new HashMap<>();
 
     public ChunkTerrain() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -98,10 +98,24 @@ public class ChunkTerrain {
         mesh2.updateBound();
         mesh2.updateCounts();
 
+        _mesh = mesh2;
+        
         return mesh2;
     }
+
+    public Mesh getMesh() {
+        return _mesh;
+    }
+
+    public void setMesh(Mesh _mesh) {
+        this._mesh = _mesh;
+    }
+    
   public ChunkTerrain(AssetManager m, Camera c, Node root, BulletAppState st, int seed) {
+      _assetManager = m;
+      _root = root;
       _seed = seed;
+      _state = st;
     /** 1. Create terrain material and load four textures into it. */
     mat_terrain = new Material(m,
             "Common/MatDefs/Terrain/Terrain.j3md");
@@ -170,15 +184,55 @@ public class ChunkTerrain {
     DirectionalLight sun = new DirectionalLight();
     sun.setColor(ColorRGBA.White);
     sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
-    WorldManager.root.addLight(sun);
+    root.addLight(sun);
+    _rng = new Random(_seed);
     System.out.println("YOOOO");
   }
   public void spawnTerrain() {
-    WorldManager.root.attachChild(terrain);
-    WorldManager.state.getPhysicsSpace().add(_con);
+    _root.attachChild(terrain);
+    _state.getPhysicsSpace().add(_con);
   }
   public void despawnTerrain() {
     terrain.removeFromParent();
-    WorldManager.state.getPhysicsSpace().remove(_con);
+    _state.getPhysicsSpace().remove(_con);
   }
+    public void spawnResources() {        
+        float[] heights = terrain.getHeightMap();
+        int length = heights.length;
+        int side = (int) FastMath.sqrt(heights.length);
+        float[] vertices = new float[length * 3];
+        int[] indices = new int[(side - 1) * (side - 1) * 6];
+        Map<ResourceNode, Vector3f> resources = new HashMap<>();
+
+//        Vector3f trans = ((Node) terr).getWorldTranslation().clone();
+        Vector3f trans = new Vector3f(0, 0, 0);
+        trans.x -= terrain.getTerrainSize() / 2f;
+        trans.z -= terrain.getTerrainSize() / 2f;
+        float offsetX = trans.x;
+        float offsetZ = trans.z;
+
+        int i = 0;
+        for (int z = 0; z < side - 1; z++) {
+            for (int x = 0; x < side - 1; x++) {
+                // triangle 1
+                indices[i++] = z * side + x;
+                indices[i++] = (z + 1) * side + x;
+                indices[i++] = (z + 1) * side + x + 1;
+                
+                if (_rng.nextInt() % 100 == 0) {
+                    //spawn resources here
+                    ResourceTypes res = ResourceTypes.values()[_rng.nextInt() % ResourceTypes.values().length];
+                    int amt = (_rng.nextInt() % 10000) + 10000;
+                    ResourceNode n = new ResourceNode(-1, res, amt, new Vector3f(x, -1, z));
+                    resources.put(n, n.getLoc());
+                }
+                
+                // triangle 2
+                indices[i++] = z * side + x;
+                indices[i++] = (z + 1) * side + x + 1;
+                indices[i++] = z * side + x + 1;
+            }
+        }
+        _resources = resources;
+    }
 }

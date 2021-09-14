@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import telos.lib.core.unit.Unit;
 import telos.net.ClientConnector;
-import world.ChunkTerrain;
+import telos.lib.core.ChunkTerrain;
 
 /**
  *
