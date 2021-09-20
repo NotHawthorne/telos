@@ -22,6 +22,7 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import telos.GameCam;
 import telos.lib.network.messages.ChunkRequestMessage;
+import telos.WorldManager;
 
 /**
  *

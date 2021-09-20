@@ -8,7 +8,7 @@ package server.listeners;
 import com.jme3.network.HostedConnection;
 import com.jme3.network.Message;
 import com.jme3.network.MessageListener;
-import server.Chunk;
+import telos.lib.core.Chunk;
 import server.GameServer;
 import server.UserLedger;
 import telos.lib.core.unit.Unit;

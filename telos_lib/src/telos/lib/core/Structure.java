@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import telos.lib.core.player.PlayerFactions;
+import telos.lib.network.messages.CreateStructureMessage;
 
 /**
  *
@@ -52,6 +53,19 @@ public class Structure {
     }
     
     public Structure() { }
+    
+    public Structure(CreateStructureMessage m) {
+        _id = m.getId();
+        _dbId = m.getDbId();
+        _loc = m.getLoc();
+        _hp = m.getHp();
+        _maxHp = m.getMaxHp();
+        _type = StructureTypes.valueOf(m.getType());
+        _owner = m.getOwner();
+        _chunkX = m.getChunkX();
+        _chunkY = m.getChunkY();
+        _name = m.getName();
+    }
 
     public int getChunkX() {
         return _chunkX;

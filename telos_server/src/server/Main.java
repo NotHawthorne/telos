@@ -22,6 +22,7 @@ public class Main extends SimpleApplication {
             Scribe.init();
             UserLedger.init();
             UnitLedger.init();
+            StructureLedger.init();
             GameServer gameServer = new GameServer(4242);
             gameServer.startServer();
         }

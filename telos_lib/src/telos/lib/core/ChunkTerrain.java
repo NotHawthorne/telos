@@ -116,34 +116,38 @@ public class ChunkTerrain {
       _root = root;
       _seed = seed;
       _state = st;
-    /** 1. Create terrain material and load four textures into it. */
-    mat_terrain = new Material(m,
-            "Common/MatDefs/Terrain/Terrain.j3md");
+      
+      // for the client
+      if (m != null) {
+;        /** 1. Create terrain material and load four textures into it. */
+        mat_terrain = new Material(m,
+                "Common/MatDefs/Terrain/Terrain.j3md");
 
-    /** 1.1) Add ALPHA map (for red-blue-green coded splat textures) */
-    mat_terrain.setTexture("Alpha", m.loadTexture(
-            "Textures/Terrain/splat/alphamap.png"));
+        /** 1.1) Add ALPHA map (for red-blue-green coded splat textures) */
+        mat_terrain.setTexture("Alpha", m.loadTexture(
+                "Textures/Terrain/splat/alphamap.png"));
 
-    /** 1.2) Add GRASS texture into the red layer (Tex1). */
-    Texture grass = m.loadTexture(
-            "Textures/Terrain/splat/grass.jpg");
-    grass.setWrap(WrapMode.Repeat);
-    mat_terrain.setTexture("Tex1", grass);
-    mat_terrain.setFloat("Tex1Scale", 64f);
+        /** 1.2) Add GRASS texture into the red layer (Tex1). */
+        Texture grass = m.loadTexture(
+                "Textures/Terrain/splat/grass.jpg");
+        grass.setWrap(WrapMode.Repeat);
+        mat_terrain.setTexture("Tex1", grass);
+        mat_terrain.setFloat("Tex1Scale", 64f);
 
-    /** 1.3) Add DIRT texture into the green layer (Tex2) */
-    Texture dirt = m.loadTexture(
-            "Textures/Terrain/splat/dirt.jpg");
-    dirt.setWrap(WrapMode.Repeat);
-    mat_terrain.setTexture("Tex2", dirt);
-    mat_terrain.setFloat("Tex2Scale", 32f);
+        /** 1.3) Add DIRT texture into the green layer (Tex2) */
+        Texture dirt = m.loadTexture(
+                "Textures/Terrain/splat/dirt.jpg");
+        dirt.setWrap(WrapMode.Repeat);
+        mat_terrain.setTexture("Tex2", dirt);
+        mat_terrain.setFloat("Tex2Scale", 32f);
 
-    /** 1.4) Add ROAD texture into the blue layer (Tex3) */
-    Texture rock = m.loadTexture(
-            "Textures/Terrain/splat/road.jpg");
-    rock.setWrap(WrapMode.Repeat);
-    mat_terrain.setTexture("Tex3", rock);
-    mat_terrain.setFloat("Tex3Scale", 128f);
+        /** 1.4) Add ROAD texture into the blue layer (Tex3) */
+        Texture rock = m.loadTexture(
+                "Textures/Terrain/splat/road.jpg");
+        rock.setWrap(WrapMode.Repeat);
+        mat_terrain.setTexture("Tex3", rock);
+        mat_terrain.setFloat("Tex3Scale", 128f);
+      }
 
     /** 2. Create the height map */
     HillHeightMap heightmap = null;
@@ -172,25 +176,30 @@ public class ChunkTerrain {
     terrain.setLocalScale(1f, 1f, 1f);
 
     /** 5. The LOD (level of detail) depends on were the camera is: */
-    TerrainLodControl control = new TerrainLodControl(terrain, c);
-    terrain.addControl(control);
+    if (c != null) {
+        TerrainLodControl control = new TerrainLodControl(terrain, c);
+        terrain.addControl(control);
+    }
     
     /** 6. collision */
     CollisionShape s = CollisionShapeFactory.createMeshShape(terrain);
     _con = new RigidBodyControl(s, 0);
     terrain.addControl(_con);
     System.out.println("Calcing navmesh");
-    navMesh = new NavMesh(getTerrainMesh());
-    DirectionalLight sun = new DirectionalLight();
-    sun.setColor(ColorRGBA.White);
-    sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
-    root.addLight(sun);
+    if (_root != null) { // only do this for clients?
+        navMesh = new NavMesh(getTerrainMesh());
+    }
     _rng = new Random(_seed);
+    spawnResources();
     System.out.println("YOOOO");
   }
   public void spawnTerrain() {
     _root.attachChild(terrain);
     _state.getPhysicsSpace().add(_con);
+    DirectionalLight sun = new DirectionalLight();
+    sun.setColor(ColorRGBA.White);
+    sun.setDirection(new Vector3f(-.5f,-.5f,-.5f).normalizeLocal());
+    _root.addLight(sun);
   }
   public void despawnTerrain() {
     terrain.removeFromParent();
@@ -214,23 +223,13 @@ public class ChunkTerrain {
         int i = 0;
         for (int z = 0; z < side - 1; z++) {
             for (int x = 0; x < side - 1; x++) {
-                // triangle 1
-                indices[i++] = z * side + x;
-                indices[i++] = (z + 1) * side + x;
-                indices[i++] = (z + 1) * side + x + 1;
-                
-                if (_rng.nextInt() % 100 == 0) {
+                if (Math.abs(_rng.nextInt()) % 500 == 0) {
                     //spawn resources here
-                    ResourceTypes res = ResourceTypes.values()[_rng.nextInt() % ResourceTypes.values().length];
-                    int amt = (_rng.nextInt() % 10000) + 10000;
+                    ResourceTypes res = ResourceTypes.values()[Math.abs(_rng.nextInt()) % ResourceTypes.values().length];
+                    int amt = (Math.abs(_rng.nextInt()) % 10000) + 10000;
                     ResourceNode n = new ResourceNode(-1, res, amt, new Vector3f(x, -1, z));
                     resources.put(n, n.getLoc());
                 }
-                
-                // triangle 2
-                indices[i++] = z * side + x;
-                indices[i++] = (z + 1) * side + x + 1;
-                indices[i++] = z * side + x + 1;
             }
         }
         _resources = resources;

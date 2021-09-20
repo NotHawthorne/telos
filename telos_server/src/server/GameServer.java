@@ -5,6 +5,7 @@
  */
 package server;
 
+import telos.lib.core.Chunk;
 import com.jme3.math.Vector2f;
 import com.jme3.network.AbstractMessage;
 import com.jme3.network.HostedConnection;
@@ -50,10 +51,10 @@ public class GameServer {
     }
     
     public static Chunk getChunk(Vector2f coords) {
-        if (_chunks.get(GameServer.genSeed((int)coords.x, (int)coords.y)) == null) {
-            _chunks.put(GameServer.genSeed((int)coords.x, (int)coords.y), new Chunk(coords));
+        if (_chunks.get(Chunk.genSeed((int)coords.x, (int)coords.y)) == null) {
+            _chunks.put(Chunk.genSeed((int)coords.x, (int)coords.y), new Chunk(coords));
         }
-        return _chunks.get(GameServer.genSeed((int)coords.x, (int)coords.y));
+        return _chunks.get(Chunk.genSeed((int)coords.x, (int)coords.y));
     }
     
     public Chunk getRandomStartingChunk() {
@@ -67,12 +68,6 @@ public class GameServer {
     public GameServer(int port) {
         setPort(port);
         //_listener = new LoginMessageListener();
-    }
-    
-    public static int genSeed(int x, int y) {
-        int xx = x % 2 == 0 ? x / 2 : (x + 1) / -2;
-        int yy = y % 2 == 0 ? y / 2 : (y + 1) / -2;
-        return (xx >= yy ? (xx * xx + xx + yy) : (yy * yy + xx));
     }
     
     public void startServer() {
